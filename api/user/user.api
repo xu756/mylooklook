@@ -1,9 +1,29 @@
 syntax = "v1"
 
 info(
-    title: "type title here"
-    desc: "type desc here"
-    author: "type author here"
-    email: "type email here"
-    version: "type version here"
+	title: "用户api"
+	desc: "用户相关api"
+	author: "xu756"
+	email: "756334744@qq.com"
+	version: "v1"
 )
+
+type (
+	userLogin {
+		Username string `json:"username"`
+		Password string `json:"password"`
+	}
+	Res {
+		Code int         `json:"code"`
+		Msg  string      `json:"msg"`
+		Data interface{} `json:"data"`
+	}
+)
+@server(
+	prefix: api/user/v1
+)
+service user-api {
+	@doc "用户登录"
+	@handler userLogin
+	post /login (userLogin) returns (Res)
+}
