@@ -18,7 +18,6 @@ type UserLoginLogic struct {
 func NewUserLoginLogic(ctx context.Context, svcCtx *svc.ServiceContext) *UserLoginLogic {
 	return &UserLoginLogic{
 		Logger: logx.WithContext(ctx),
-
 		ctx:    ctx,
 		svcCtx: svcCtx,
 	}
