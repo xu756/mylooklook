@@ -2,7 +2,7 @@ Name: user-api
 Host: 0.0.0.0
 Port: 8691
 Mysql:
-  DataSource: xu756:123456@tcp(127.0.0.1:3306)/mylooklook?charset=utf8mb4&parseTime=true&loc=Asia%2FShanghai
+  DataSource: xu756:123456@tcp(121.5.132.57:5700)/mylooklook?charset=utf8mb4&parseTime=true&loc=Asia%2FShanghai
 Cache:
   - Host: 121.5.132.57:6700
     Pass:
