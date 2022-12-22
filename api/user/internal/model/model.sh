@@ -1,1 +1,1 @@
-goctl model mysql datasource -url="xu756:123456.@tcp(121.5.132.57:5700)/mylooklook" -table="user" -c -dir .
+goctl model mysql datasource -url="xu756:123456@tcp(127.0.0.1:3306)/mylooklook" -table="user" -c -dir .
