@@ -21,6 +21,7 @@ type (
 )
 @server(
 	prefix: api/user/v1
+	jwt: Auth
 )
 service user-api {
 	@doc "用户登录"
