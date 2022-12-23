@@ -21,13 +21,15 @@ var (
 	userRowsExpectAutoSet   = strings.Join(stringx.Remove(userFieldNames, "`id`", "`create_time`", "`update_at`", "`updated_at`", "`update_time`", "`create_at`", "`created_at`"), ",")
 	userRowsWithPlaceHolder = strings.Join(stringx.Remove(userFieldNames, "`id`", "`create_time`", "`update_at`", "`updated_at`", "`update_time`", "`create_at`", "`created_at`"), "=?,") + "=?"
 
-	cacheMylooklookUserIdPrefix = "cache:mylooklook:user:id:"
+	cacheMylooklookUserIdPrefix   = "cache:mylooklook:user:id:"
+	cacheMylooklookUserNamePrefix = "cache:mylooklook:user:name:"
 )
 
 type (
 	userModel interface {
 		Insert(ctx context.Context, data *User) (sql.Result, error)
 		FindOne(ctx context.Context, id int64) (*User, error)
+		FindUserByName(ctx context.Context, name string) (*User, error)
 		Update(ctx context.Context, data *User) error
 		Delete(ctx context.Context, id int64) error
 	}
@@ -76,6 +78,24 @@ func (m *defaultUserModel) FindOne(ctx context.Context, id int64) (*User, error)
 	default:
 		return nil, err
 	}
+}
+
+func (m *defaultUserModel) FindUserByName(ctx context.Context, name string) (*User, error) {
+	mylooklookUserNameKey := fmt.Sprintf("%s%v", cacheMylooklookUserNamePrefix, name)
+	var resp User
+	err := m.QueryRowCtx(ctx, &resp, mylooklookUserNameKey, func(ctx context.Context, conn sqlx.SqlConn, v interface{}) error {
+		query := fmt.Sprintf("select %s from %s where `username` = ? limit 1", userRows, m.table)
+		return conn.QueryRowCtx(ctx, v, query, name)
+	})
+	switch err {
+	case nil:
+		return &resp, nil
+	case sqlc.ErrNotFound:
+		return nil, ErrNotFound
+	default:
+		return nil, err
+	}
+
 }
 
 func (m *defaultUserModel) Insert(ctx context.Context, data *User) (sql.Result, error) {

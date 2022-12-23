@@ -2,11 +2,10 @@ package logic
 
 import (
 	"context"
-	"database/sql"
-	"log"
-	"mylooklook/api/user/internal/model"
+	"errors"
 	"mylooklook/api/user/internal/svc"
 	"mylooklook/api/user/internal/types"
+	"strings"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -26,19 +25,17 @@ func NewUserLoginLogic(ctx context.Context, svcCtx *svc.ServiceContext) *UserLog
 }
 
 func (l *UserLoginLogic) UserLogin(req *types.UserLogin) (resp *types.Res, err error) {
-	_, er := l.svcCtx.UserModel.Insert(l.ctx, &model.User{
-		Username: req.Username,
-		Password: req.Password,
-		Phone:    sql.NullString{String: req.Password, Valid: true},
-	})
+	if len(strings.TrimSpace(req.Username)) == 0 || len(strings.TrimSpace(req.Password)) == 0 {
+		return nil, errors.New("参数错误")
+	}
+	user, er := l.svcCtx.UserModel.FindUserByName(l.ctx, req.Username)
 	if er != nil {
-		log.Print(er)
-		return nil, er
+		return nil, errors.New("用户不存在")
 	}
 	resp = &types.Res{
 		Code: 200,
 		Msg:  "success",
-		Data: req,
+		Data: user,
 	}
 	return resp, nil
 }
