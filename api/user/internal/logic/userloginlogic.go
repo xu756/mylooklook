@@ -2,7 +2,9 @@ package logic
 
 import (
 	"context"
+	"database/sql"
 	"log"
+	"mylooklook/api/user/internal/model"
 	"mylooklook/api/user/internal/svc"
 	"mylooklook/api/user/internal/types"
 
@@ -24,7 +26,11 @@ func NewUserLoginLogic(ctx context.Context, svcCtx *svc.ServiceContext) *UserLog
 }
 
 func (l *UserLoginLogic) UserLogin(req *types.UserLogin) (resp *types.Res, err error) {
-	user, er := l.svcCtx.UserModel.FindOne(l.ctx, 5)
+	_, er := l.svcCtx.UserModel.Insert(l.ctx, &model.User{
+		Username: req.Username,
+		Password: req.Password,
+		Phone:    sql.NullString{String: req.Password, Valid: true},
+	})
 	if er != nil {
 		log.Print(er)
 		return nil, er
@@ -32,7 +38,7 @@ func (l *UserLoginLogic) UserLogin(req *types.UserLogin) (resp *types.Res, err e
 	resp = &types.Res{
 		Code: 200,
 		Msg:  "success",
-		Data: user,
+		Data: req,
 	}
 	return resp, nil
 }
