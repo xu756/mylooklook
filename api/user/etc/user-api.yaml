@@ -1,6 +1,7 @@
 Name: user-api
 Host: 0.0.0.0
 Port: 8691
+Verbose: true
 Auth:
   AccessSecret: user123456
   AccessExpire: 3600

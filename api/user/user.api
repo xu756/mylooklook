@@ -21,10 +21,19 @@ type (
 )
 @server(
 	prefix: api/user/v1
-	jwt: Auth
 )
 service user-api {
 	@doc "用户登录"
 	@handler userLogin
 	post /login (userLogin) returns (Res)
+}
+
+@server(
+	prefix: api/user/v1
+	jwt: Auth
+)
+service user-api {
+	@doc "获取用户信息"
+	@handler getUserInfo
+	get /getuserinfo returns (Res)
 }

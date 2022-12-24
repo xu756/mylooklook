@@ -18,6 +18,17 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				Handler: userLoginHandler(serverCtx),
 			},
 		},
+		rest.WithPrefix("/api/user/v1"),
+	)
+
+	server.AddRoutes(
+		[]rest.Route{
+			{
+				Method:  http.MethodGet,
+				Path:    "/getuserinfo",
+				Handler: getUserInfoHandler(serverCtx),
+			},
+		},
 		rest.WithJwt(serverCtx.Config.Auth.AccessSecret),
 		rest.WithPrefix("/api/user/v1"),
 	)
